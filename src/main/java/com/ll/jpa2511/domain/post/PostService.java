@@ -2,9 +2,11 @@ package com.ll.jpa2511.domain.post;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,5 +20,23 @@ public class PostService {
 
     public List<Post> findByUsername(String username) {
         return postRepository.findByUsername(username);
+    }
+
+    public Post create(String subject, String content, String username) {
+        Post post = Post.builder()
+                .subject(subject)
+                .content(content)
+                .username(username)
+                .build();
+
+        return postRepository.save(post);
+    }
+
+    @SneakyThrows
+    public Optional<Post> findWithShareLockById(Long id) {
+        postRepository.findWithShareLockById(id);
+        Thread.sleep(10000);
+
+        return postRepository.findWithShareLockById(id);
     }
 }
